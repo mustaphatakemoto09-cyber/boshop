@@ -37,7 +37,7 @@ final class PasswordController extends Controller
         $user = $request->user();
 
         if (! $user instanceof User) {
-            return redirect()->route('login');
+            return to_route('login');
         }
 
         $user->update([
