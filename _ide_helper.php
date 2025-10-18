@@ -5174,7 +5174,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function lock($name, $seconds = 0, $owner = null)
         {
-            /** @var \Illuminate\Cache\DatabaseStore $instance */
+            /** @var \Illuminate\Cache\MemcachedStore $instance */
             return $instance->lock($name, $seconds, $owner);
         }
 
@@ -5188,21 +5188,8 @@ namespace Illuminate\Support\Facades {
          */
         public static function restoreLock($name, $owner)
         {
-            /** @var \Illuminate\Cache\DatabaseStore $instance */
+            /** @var \Illuminate\Cache\MemcachedStore $instance */
             return $instance->restoreLock($name, $owner);
-        }
-
-        /**
-         * Remove an item from the cache if it is expired.
-         *
-         * @param string $key
-         * @return bool
-         * @static
-         */
-        public static function forgetIfExpired($key)
-        {
-            /** @var \Illuminate\Cache\DatabaseStore $instance */
-            return $instance->forgetIfExpired($key);
         }
 
         /**
@@ -5213,58 +5200,20 @@ namespace Illuminate\Support\Facades {
          */
         public static function flush()
         {
-            /** @var \Illuminate\Cache\DatabaseStore $instance */
+            /** @var \Illuminate\Cache\MemcachedStore $instance */
             return $instance->flush();
         }
 
         /**
-         * Get the underlying database connection.
+         * Get the underlying Memcached connection.
          *
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Memcached
          * @static
          */
-        public static function getConnection()
+        public static function getMemcached()
         {
-            /** @var \Illuminate\Cache\DatabaseStore $instance */
-            return $instance->getConnection();
-        }
-
-        /**
-         * Set the underlying database connection.
-         *
-         * @param \Illuminate\Database\ConnectionInterface $connection
-         * @return \Illuminate\Cache\DatabaseStore
-         * @static
-         */
-        public static function setConnection($connection)
-        {
-            /** @var \Illuminate\Cache\DatabaseStore $instance */
-            return $instance->setConnection($connection);
-        }
-
-        /**
-         * Get the connection used to manage locks.
-         *
-         * @return \Illuminate\Database\PostgresConnection
-         * @static
-         */
-        public static function getLockConnection()
-        {
-            /** @var \Illuminate\Cache\DatabaseStore $instance */
-            return $instance->getLockConnection();
-        }
-
-        /**
-         * Specify the connection that should be used to manage locks.
-         *
-         * @param \Illuminate\Database\ConnectionInterface $connection
-         * @return \Illuminate\Cache\DatabaseStore
-         * @static
-         */
-        public static function setLockConnection($connection)
-        {
-            /** @var \Illuminate\Cache\DatabaseStore $instance */
-            return $instance->setLockConnection($connection);
+            /** @var \Illuminate\Cache\MemcachedStore $instance */
+            return $instance->getMemcached();
         }
 
         /**
@@ -5275,7 +5224,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function getPrefix()
         {
-            /** @var \Illuminate\Cache\DatabaseStore $instance */
+            /** @var \Illuminate\Cache\MemcachedStore $instance */
             return $instance->getPrefix();
         }
 
@@ -5288,7 +5237,7 @@ namespace Illuminate\Support\Facades {
          */
         public static function setPrefix($prefix)
         {
-            /** @var \Illuminate\Cache\DatabaseStore $instance */
+            /** @var \Illuminate\Cache\MemcachedStore $instance */
             $instance->setPrefix($prefix);
         }
 
@@ -22956,6 +22905,41 @@ namespace Illuminate\Support\Facades {
             }
     }
 
+namespace Illuminate\Support {
+    /**
+     * @template TKey of array-key
+     * @template-covariant TValue
+     * @implements \ArrayAccess<TKey, TValue>
+     * @implements \Illuminate\Support\Enumerable<TKey, TValue>
+     */
+    class Collection {
+        /**
+         * @see \LaraDumps\LaraDumps\LaraDumpsServiceProvider::registerMacros()
+         * @param string $label
+         * @static
+         */
+        public static function ds($label = '')
+        {
+            return \Illuminate\Support\Collection::ds($label);
+        }
+
+            }
+    /**
+     */
+    class Stringable {
+        /**
+         * @see \LaraDumps\LaraDumps\LaraDumpsServiceProvider::registerMacros()
+         * @param string $label
+         * @static
+         */
+        public static function ds($label = '')
+        {
+            return \Illuminate\Support\Stringable::ds($label);
+        }
+
+            }
+    }
+
 namespace Illuminate\Http {
     /**
      */
@@ -23086,6 +23070,31 @@ namespace Illuminate\Testing {
         public static function inertiaProps($propName = null)
         {
             return \Illuminate\Testing\TestResponse::inertiaProps($propName);
+        }
+
+        /**
+         * @see \LaraDumps\LaraDumps\LaraDumpsServiceProvider::registerMacros()
+         * @static
+         */
+        public static function ds()
+        {
+            return \Illuminate\Testing\TestResponse::ds();
+        }
+
+            }
+    }
+
+namespace Illuminate\Database\Query {
+    /**
+     */
+    class Builder {
+        /**
+         * @see \LaraDumps\LaraDumps\LaraDumpsServiceProvider::registerMacros()
+         * @static
+         */
+        public static function ds()
+        {
+            return \Illuminate\Database\Query\Builder::ds();
         }
 
             }
@@ -27933,6 +27942,15 @@ namespace  {
         {
             /** @var \Illuminate\Database\Query\Builder $instance */
             return $instance->macroCall($method, $parameters);
+        }
+
+        /**
+         * @see \LaraDumps\LaraDumps\LaraDumpsServiceProvider::registerMacros()
+         * @static
+         */
+        public static function ds()
+        {
+            return \Illuminate\Database\Query\Builder::ds();
         }
 
 }
