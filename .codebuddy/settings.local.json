@@ -1,0 +1,10 @@
+{
+  "cleanupPeriodDays": 30,
+  "env": {},
+  "includeCoAuthoredBy": false,
+  "enabledMcpjsonServers": [
+    "laravel-boost",
+    "MCP_DOCKER"
+  ],
+  "disabledMcpjsonServers": []
+}
