@@ -1,91 +1,68 @@
 <!--
 Sync Impact Report
-- Version change: (template) → 1.0.0
-- Modified principles: Converted placeholder principles to concrete, actionable principles tailored for this repository (Test-First, Laravel Way, Inertia & Frontend Integration, Observability & Simplicity, Versioning/Releases).
-- Added sections: Constraints & Compliance, Development Workflow & Quality Gates.
-- Removed sections: No sections removed; placeholders replaced with concrete content.
-- Templates requiring updates:
-  - .specify/templates/plan-template.md ✅ updated (Constitution Check clarified)
-  - .specify/templates/spec-template.md ✅ updated (Constitution compliance note)
-  - .specify/templates/tasks-template.md ⚠ pending (no forced changes required; samples remain)
-- Follow-up TODOs:
-  - RATIFICATION_DATE intentionally left as TODO because repository does not contain an authoritative adoption date. See 'deferred items' below.
+Version change: 0.0.0 -> 1.0.0
+Modified principles: none (initial ratification)
+Added sections: Core Principles (I-V); Architecture Guardrails; Workflow & Quality Gates; Governance
+Removed sections: none
+Templates requiring updates:
+- ✅ .specify/templates/plan-template.md
+- ✅ .specify/templates/spec-template.md
+- ✅ .specify/templates/tasks-template.md
+Follow-up TODOs: none
 -->
-
 # Boshop Constitution
 
 ## Core Principles
 
-### Test-First (NON-NEGOTIABLE)
-Every new feature or change MUST be accompanied by automated tests written before implementation. Tests are the primary specification and acceptance criteria for work.
+### I. Inertia-First Experience
+- Must deliver primary user journeys through Inertia-rendered React pages invoked from Laravel routes in `routes/`.
+- Must keep server-side controllers slim, delegating view state to `resources/js/` layouts and components for consistency.
+- Must provide progressive enhancement or graceful fallback when JavaScript is disabled for critical flows.
+Rationale: A unified Laravel + React stack keeps UX cohesive and reduces divergence between server and client behaviour.
 
-- Use Pest for unit, feature, and browser tests according to project conventions.
-- Prefer feature tests for user-facing behavior and browser tests (Pest v4) for important flows; write contract and integration tests where appropriate.
-- Use model factories, dataset-driven tests, and mocks only where helpful — prefer real integrations for core paths.
-- Tests MUST fail before implementation (red → green → refactor). Continuous integration MUST enforce passing tests on merge.
+### II. Typed Data Contracts
+- Must represent cross-layer payloads with `App\\Data\\` DTOs and keep them in sync with generated TypeScript types.
+- Must reject ad-hoc array payloads; any new field requires DTO evolution plus corresponding frontend type updates.
+- Must document backward-incompatible changes in release notes before merging.
+Rationale: Typed contracts protect Inertia responses from drift and enable confident refactors across PHP and TypeScript.
 
-Rationale: Tests reduce regressions, document expected behavior, and align with the project's mandatory test-first policy.
+### III. Account Security & Privacy
+- Must enforce authentication via Laravel Fortify/Wayfinder middleware on any route exposing user data.
+- Must store secrets solely in `.env` and access them through config helpers; never commit credentials.
+- Must log and alert on repeated auth failures without exposing sensitive context to clients.
+Rationale: Strong guardrails prevent accidental data leaks while supporting future compliance needs.
 
-### The Laravel Way (Eloquent & Conventions)
-Leverage Laravel conventions and first-class framework features. Prefer Eloquent, Form Requests, Policies, Gates, and artisan generators over handwritten plumbing.
+### IV. Quality Gates & Automation
+- Must gate merges on Pest unit + feature coverage, PHPStan static analysis, and ESLint/TypeScript checks.
+- Must add regression tests alongside every behaviour change; deleting tests requires equivalent replacements that cover intent.
+- Must keep CI pipelines under 10 minutes by parallelising PHP and Node tasks or deferring heavy suites.
+Rationale: Automated gates preserve reliability as the monolith scales and keep feedback loops fast enough for daily iteration.
 
-- Use `php artisan make:` commands (controllers, models, requests, jobs) with `--no-interaction` in automation.
-- Validation SHOULD be implemented in Form Request classes; controllers remain thin.
-- Use Eloquent relationships and eager-loading to avoid N+1 problems; prefer query scopes and model APIs over raw DB access.
-- Use queued jobs for long-running tasks and the `ShouldQueue` interface for asynchronous processing.
+### V. Operability & Observability
+- Must emit structured logs for queue jobs, background tasks, and external integrations via Laravel Pail conventions.
+- Must monitor queue backlogs and failed jobs, triggering alerts when thresholds defined in `config/queue.php` are exceeded.
+- Must supply deployment runbooks outlining rollback, cache clear, and asset build steps before production release.
+Rationale: Visibility into runtime health is essential for diagnosing issues quickly and supporting continuous delivery.
 
-Rationale: Following Laravel's idioms keeps codebase consistent, maintainable, and leverages framework upgrades safely.
+## Architecture Guardrails
 
-### Inertia & Frontend Integration
-Frontend components and pages MUST follow the project's Inertia + React conventions.
+- Backend domain logic lives in `app/` with facades kept thin; heavy orchestration belongs in dedicated service classes or actions.
+- React components under `resources/js/` must be co-located with feature folders, sharing Tailwind utility tokens to standardise styling.
+- Database schema changes require matching factories/seeders in `database/` to maintain local reproducibility.
+- Real-time requirements must prefer Laravel Echo or native broadcasting; introducing new queues or transports demands architecture review.
 
-- Place Inertia pages under `resources/js/Pages` and use `Inertia::render()` for server-rendered routes.
-- Use the Inertia `Form` component or the `useForm` helper for forms; adopt deferred props, prefetching, and WhenVisible patterns where beneficial.
-- Ensure frontend builds are reproducible; if UI changes are not visible, run `npm run build`, `npm run dev`, or `composer run dev` as appropriate.
+## Workflow & Quality Gates
 
-Rationale: Consistent Inertia usage prevents integration drift between backend routes and frontend pages and ensures predictable UX behavior.
-
-### Observability & Simplicity
-Design for operability and keep solutions as simple as possible.
-
-- Structured logging and meaningful log levels are required for server-side operations.
-- Use Tailwind utility conventions already present in the codebase; prefer gap utilities for lists and support `dark:` where existing components do.
-- Avoid premature optimization and complexity; YAGNI applies — add instrumentation and performance work only when justified by evidence.
-
-Rationale: Simple, observable systems are easier to debug, maintain, and iterate on.
-
-### Versioning, Releases & Breaking Changes
-Follow semantic versioning for public or internal package releases and document breaking changes and migration plans for the application.
-
-- Versioning convention: MAJOR.MINOR.PATCH. MAJOR for incompatible governance or public API changes; MINOR for new principles or additive features; PATCH for clarifications and typos.
-- Breaking changes MUST include a migration plan, a clear changelog entry, and CI checks that surface incompatibilities.
-- All releases/merges that affect runtime behavior MUST reference a ticket and include tests verifying the change.
-
-Rationale: Clear versioning and migration plans reduce upgrade friction and set expectations for consumers and maintainers.
-
-## Constraints & Compliance
-
-- Platform: PHP 8.4, Laravel 12 as recorded in `composer.json`.
-- Frontend: Inertia v2, React v19, Tailwind v4 conventions present in the repo.
-- Build: Developers MAY need to run `npm run build` or `npm run dev` (or `composer run dev`) when frontend assets change.
-- Security: Environment variables MUST be accessed via `config()` in config files; do not call `env()` outside configuration.
-- Tooling: Use Pint for formatting (`vendor/bin/pint` to fix), run `vendor/bin/pint --dirty` before finalizing changes; use Rector and PHPStan per repo scripts where appropriate.
-
-## Development Workflow & Quality Gates
-
-- Use `php artisan make:` generators for new code; include Form Requests for validation and create factories when adding models.
-- Code style: Run Pint to fix formatting. CI MUST run tests and linters before merges.
-- PRs: At minimum, include description, tests, and a changelog line for behavior changes. Major or breaking changes require an explicit migration guide in the PR.
-- Tests: Follow project Pest conventions; prefer feature tests and datasets where helpful. Run minimal affected tests locally before pushing.
+- Feature work must begin with `/speckit.specify` to capture user stories and explicit acceptance tests.
+- `/speckit.plan` outputs must document Constitution Check decisions, citing affected principles and mitigation when deviating.
+- `/speckit.tasks` must group work by user story, ensuring each slice is independently releasable and testable.
+- Pull requests must include CI evidence (test + lint logs) and reference updated DTOs, migrations, and TypeScript types when applicable.
 
 ## Governance
 
-The Constitution is the source of truth for project-level engineering norms. Amendments follow the process below.
+- The constitution supersedes informal practices; conflicts are resolved in favour of these rules.
+- Amendments require consensus of maintainers, recorded rationale, and version bump following semantic rules (major/minor/patch).
+- Ratified copies live in `.specify/memory/constitution.md`; any runtime guidance (e.g., CLAUDE.md, GEMINI.md) must align within 48 hours of amendments.
+- Compliance reviews occur each release cycle, verifying template outputs and CI pipelines against Principles I–V.
 
-- Amendments: Proposals MUST be documented as a PR that updates this file and contains a migration or implementation plan for any behavioral changes.
-- Approval: A change to the Constitution requires approval from at least one project maintainer and passing CI (tests + linters). Major governance changes should have two maintainer approvals.
-- Versioning: Bump `CONSTITUTION_VERSION` per semantic rules. The author of the amendment SHOULD include a short rationale in the PR body explaining the bump type.
-- Compliance: All PRs MUST include a short checklist that references applicable Constitution principles and how the change satisfies them.
-
-**Version**: 1.0.0 | **Ratified**: 2025-10-17 | **Last Amended**: 2025-10-17
-<!-- Dates are ISO format YYYY-MM-DD. -->
+**Version**: 1.0.0 | **Ratified**: 2025-10-21 | **Last Amended**: 2025-10-21

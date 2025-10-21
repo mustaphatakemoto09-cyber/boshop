@@ -31,14 +31,7 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-This project uses the repository Constitution at `.specify/memory/constitution.md`. Plans MUST explicitly demonstrate how the feature meets the following Gates derived from the Constitution:
-
-- Test-First: List the tests to be added (unit/feature/browser). For any user-facing behavior, include at least one feature or browser test. Tests MUST be present in the plan and added early in the implementation.
-- Laravel Conventions: Indicate where Form Requests, Models, Policies, and artisan-generated classes will be used. Explain any deliberate deviation.
-- Observability & Simplicity: Describe logging, metrics, and any added instrumentation; justify complexity if introduced.
-- Versioning & Migration: If the change is breaking or changes public behavior, include a migration plan and changelog entry draft.
-
-If any gate cannot be satisfied at plan time, document the reason and mitigation steps.
+[Gates determined based on constitution file]
 
 ## Project Structure
 
@@ -57,7 +50,7 @@ specs/[###-feature]/
 ### Source Code (repository root)
 <!--
   ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for the project. Delete unused options and expand the chosen structure with
+  for this feature. Delete unused options and expand the chosen structure with
   real paths (e.g., apps/admin, packages/something). The delivered plan must
   not include Option labels.
 -->
@@ -93,6 +86,9 @@ frontend/
 # [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
 api/
 └── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
 **Structure Decision**: [Document the selected structure and reference the real
@@ -106,4 +102,4 @@ directories captured above]
 |-----------|------------|-------------------------------------|
 | [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
 | [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
-| [e.g., Additional instrumentation] | [why needed] | [why not added earlier] |
+

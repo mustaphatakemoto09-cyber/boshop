@@ -5,16 +5,6 @@
 **Status**: Draft  
 **Input**: User description: "$ARGUMENTS"
 
-## Constitution Compliance *(mandatory)*
-
-All feature specifications MUST reference the repository Constitution at `.specify/memory/constitution.md` and include the following information to demonstrate compliance:
-
-- Tests: List required tests (unit/feature/browser) and the minimal test coverage needed for the feature. For user-facing behavior include at least one feature or browser test.
-- Migration/Versioning: If the feature introduces breaking behavior or public API changes, include a migration plan, changelog draft, and an explicit versioning decision (MAJOR/MINOR/PATCH).
-- Framework Conventions: Identify where Form Requests, Policies, and Eloquent models will be used, and justify any deviations from Laravel conventions.
-
-This section is mandatory and will be checked during plan review.
-
 ## User Scenarios & Testing *(mandatory)*
 
 <!--
@@ -123,3 +113,4 @@ This section is mandatory and will be checked during plan review.
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+
